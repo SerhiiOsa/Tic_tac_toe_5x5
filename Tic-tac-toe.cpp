@@ -13,7 +13,8 @@
 
 using namespace std;
 
-const int BOARD_SIZE=5; //The game board size is 5*5
+const int BOARD_WIDTH=5; //The number of coloumns in the game board
+const int BOARD_HEIGHT=5; //The number of rows in the game board
 const int IN_LINE=4; //How much player's signs must be in line for win
 const int EASY=1; //low level of AI
 const int MEDIUM=2; //middle level of AI
@@ -30,23 +31,23 @@ void first_turn(char *now_turn, char crosses, char nulles);
 	//Changing player who turn next function
 void next_turn(char *now_turn, char crosses, char nulles);
 	//Showing gameplay screen function
-void show_game_screen(char now_turn, char game_screen[][BOARD_SIZE]);
+void show_game_screen(char now_turn, char game_screen[][BOARD_WIDTH]);
 	//Turn checking function
-void turn(bool *exit_round, char now_turn, int game_board[][BOARD_SIZE], char game_screen[][BOARD_SIZE]);
+void turn(bool *exit_round, char now_turn, int game_board[][BOARD_WIDTH], char game_screen[][BOARD_WIDTH]);
 	//For checking backend part function (only while codding/testing)
-void show_how_it_runs(int game_board_cr[][BOARD_SIZE], int game_board_nl[][BOARD_SIZE]);
+void show_how_it_runs(int game_board_cr[][BOARD_WIDTH], int game_board_nl[][BOARD_WIDTH]);
 	//Check if there is win or draw rezult
-bool check_for_end_rezult(int game_board[][BOARD_SIZE], int win_or_draw);
+bool check_for_end_rezult(int game_board[][BOARD_WIDTH], int win_or_draw);
 	//Check if smb won the game function
-bool check_for_win_combination(int game_board[][BOARD_SIZE]);
+bool check_for_win_combination(int game_board[][BOARD_WIDTH]);
 	//Check for only draw result function
-bool check_for_draw(int game_board_cr[][BOARD_SIZE], int game_board_nl[][BOARD_SIZE]);
+bool check_for_draw(int game_board_cr[][BOARD_WIDTH], int game_board_nl[][BOARD_WIDTH]);
 	//AI turn processing function
-void ai_turn(char n_t, int game_board[][BOARD_SIZE], int game_board_op[][BOARD_SIZE], char game_screen[][BOARD_SIZE]);
+void ai_turn(char n_t, int game_board[][BOARD_WIDTH], int game_board_op[][BOARD_WIDTH], char game_screen[][BOARD_WIDTH]);
 	//searching for pottentional winner combination function (puts between two)
-int check_between_two(int game_board[][BOARD_SIZE], char game_screen[][BOARD_SIZE]);
+int check_between_two(int game_board[][BOARD_WIDTH], char game_screen[][BOARD_WIDTH]);
 	//searching for pottentional winner combination function (puts next to two)	
-int check_next_to_two(int game_board[][BOARD_SIZE], char game_screen[][BOARD_SIZE]);
+int check_next_to_two(int game_board[][BOARD_WIDTH], char game_screen[][BOARD_WIDTH]);
 /*			--------------------------------------
 						Here the programm starts!!!
 			--------------------------------------
@@ -129,18 +130,18 @@ int main() {
 		* * * * * * * * * * * * * * * * * * * */
 		bool win=0, draw=0; //win or draw end resaults
 			//Gameplay boards for calculation
-		int game_board_cr[BOARD_SIZE][BOARD_SIZE]={};//for 1st player (human)
-		int game_board_nl[BOARD_SIZE][BOARD_SIZE]={}; //for 2nd player (or computer)
+		int game_board_cr[BOARD_HEIGHT][BOARD_WIDTH]={};//for 1st player (human)
+		int game_board_nl[BOARD_HEIGHT][BOARD_WIDTH]={}; //for 2nd player (or computer)
 			//Gameplay board for screen
-		char game_screen[BOARD_SIZE][BOARD_SIZE]={};
-			for(int i=0;i<BOARD_SIZE;i++){
-				for(int j=0;j<BOARD_SIZE;j++){
+		char game_screen[BOARD_HEIGHT][BOARD_WIDTH]={};
+			for(int i=0;i<BOARD_HEIGHT;i++){
+				for(int j=0;j<BOARD_WIDTH;j++){
 					game_screen[i][j]=' ';
 				}
 			}
 		first_turn(&now_turn, crosses, nulles);
 			//game playing loop
-		for(int i=0;i<BOARD_SIZE*BOARD_SIZE;i++){
+		for(int i=0;i<BOARD_HEIGHT*BOARD_WIDTH;i++){
 			bool exit_round=0; //leaving current game if true
 			if(menu_mod==SINGLE_PLAYER)
 				cout<<"\t\t\t\tSingle player game\n\n";
@@ -278,33 +279,33 @@ void next_turn(char *now_turn, char crosses, char nulles){
 }
 
 	//Showing gameplay screen function
-void show_game_screen(char now_turn, char game_screen[][BOARD_SIZE]){
+void show_game_screen(char now_turn, char game_screen[][BOARD_WIDTH]){
 	cout<<"\t\tTurn "<<now_turn<<"\n\n";
 	cout<<"     ";
-	for(int i=1;i<=BOARD_SIZE;i++){
+	for(int i=1;i<=BOARD_WIDTH;i++){
 		cout<<i<<"    ";
 	}
 	cout<<endl;
-	for(int i=0;i<BOARD_SIZE;i++){
+	for(int i=0;i<BOARD_HEIGHT;i++){
 		cout<<"   ";
-		for(int j=0;j<BOARD_SIZE;j++){
+		for(int j=0;j<BOARD_WIDTH;j++){
 			cout<<"\xCD\xCD\xCD\xCD\xCD";
 		}
 		cout<<"\n "<<i+1;		
-		for(int k=0;k<BOARD_SIZE;k++){
+		for(int k=0;k<BOARD_WIDTH;k++){
 			cout<<" \xBA ";
 			cout<<game_screen[i][k]<<" ";	
 		}
 		cout<<" \xBA\n";
 	}
 		cout<<"   ";	
-	for(int i=1;i<=BOARD_SIZE;i++){
+	for(int i=1;i<=BOARD_WIDTH;i++){
 		cout<<"\xCD\xCD\xCD\xCD\xCD";
 	}	
 }
 
 	//Turn checking function
-void turn(bool *exit_round, char now_turn, int game_board[][BOARD_SIZE], char game_screen[][BOARD_SIZE]){
+void turn(bool *exit_round, char now_turn, int game_board[][BOARD_WIDTH], char game_screen[][BOARD_WIDTH]){
 	char turn_char[] = " "; //getting turn as string from keyboard
 	int turn; //player's turn
 	cout<<"\n\nEnter two digits for turn (row and column)\n";
@@ -323,7 +324,7 @@ void turn(bool *exit_round, char now_turn, int game_board[][BOARD_SIZE], char ga
 		for(int i=0;i<2;i++){
 			turn=turn*10+turn_char[i]-48;
 		}
-		if(turn/10<1 || turn/10>BOARD_SIZE || turn%10<1|| turn%10>BOARD_SIZE) 		//Check if the number is correct
+		if(turn/10<1 || turn/10>BOARD_HEIGHT || turn%10<1|| turn%10>BOARD_WIDTH) 		//Check if the number is correct
 			cout<<"Wrong turn. Try again\n";
 		else if(game_screen[turn/10-1][turn%10-1]!=' ')					//Check if the number is still available
 			cout<<"The cell is already filled. Try an other one\n";
@@ -335,17 +336,17 @@ void turn(bool *exit_round, char now_turn, int game_board[][BOARD_SIZE], char ga
 }
 
 	//For checking backend part (only while codding/testing)
-void show_how_it_runs(int game_board_cr[][BOARD_SIZE], int game_board_nl[][BOARD_SIZE]){
+void show_how_it_runs(int game_board_cr[][BOARD_WIDTH], int game_board_nl[][BOARD_WIDTH]){
 	cout<<"\n\n";
-	for(int i=0;i<BOARD_SIZE;i++){
-		for(int j=0;j<BOARD_SIZE;j++){
+	for(int i=0;i<BOARD_HEIGHT;i++){
+		for(int j=0;j<BOARD_WIDTH;j++){
 			cout<<game_board_cr[i][j]<<"   ";
 		}	
 		cout<<"\n\n";
 	}
 	cout<<"\n\n";
-	for(int i=0;i<BOARD_SIZE;i++){
-		for(int j=0;j<BOARD_SIZE;j++){
+	for(int i=0;i<BOARD_HEIGHT;i++){
+		for(int j=0;j<BOARD_WIDTH;j++){
 			cout<<game_board_nl[i][j]<<"   ";
 		}	
 		cout<<"\n\n";
@@ -354,18 +355,26 @@ void show_how_it_runs(int game_board_cr[][BOARD_SIZE], int game_board_nl[][BOARD
 }
 
 	//Check if there is win or draw rezult
-bool check_for_end_rezult(int game_board[][BOARD_SIZE], int win_or_draw){
+bool check_for_end_rezult(int game_board[][BOARD_WIDTH], int win_or_draw){
 int row_counter=0, coloumn_counter=0, right_diagonale_counter=0, left_diagonale_counter=0;
 	bool rezult=0;
-		//Row and coloumn checking
-	for(int i=0;i<BOARD_SIZE;i++){
-		for(int j=0;j<BOARD_SIZE;j++){
+		//Row checking
+	for(int i=0;i<BOARD_HEIGHT;i++){
+		for(int j=0;j<BOARD_WIDTH;j++){
 			if(game_board[i][j]==win_or_draw){
 				row_counter++;
 				if(row_counter==IN_LINE)
 					rezult=1;
 			}else
 				row_counter=0;
+		}
+		if(rezult==1)
+			break;
+		row_counter=0;
+	}
+		//Coloumn checking
+	for(int i=0;i<BOARD_WIDTH;i++){
+		for(int j=0;j<BOARD_HEIGHT;j++){
 			if(game_board[j][i]==win_or_draw){
 				coloumn_counter++;
 				if(coloumn_counter==IN_LINE)
@@ -375,12 +384,11 @@ int row_counter=0, coloumn_counter=0, right_diagonale_counter=0, left_diagonale_
 		}
 		if(rezult==1)
 			break;
-		row_counter=0;
 		coloumn_counter=0;
 	}
 		//Diagonale checking
-	for(int i=0;i<=BOARD_SIZE-IN_LINE;i++){
-		for(int j=0;j<=BOARD_SIZE-IN_LINE;j++){
+	for(int i=0;i<=BOARD_HEIGHT-IN_LINE;i++){
+		for(int j=0;j<=BOARD_WIDTH-IN_LINE;j++){
 				//Individual coefficients of movement to the next element for right-left (rkoef) and left-right (lkoef) diagonales
 			for(int k=0, rkoef=0, lkoef=0;k<IN_LINE;k++){
 				if(game_board[i+rkoef][j+rkoef]==win_or_draw){
@@ -411,7 +419,7 @@ int row_counter=0, coloumn_counter=0, right_diagonale_counter=0, left_diagonale_
 }
 
 	//Check if smb won the game function
-bool check_for_win_combination(int game_board[][BOARD_SIZE]){
+bool check_for_win_combination(int game_board[][BOARD_WIDTH]){
 	bool win=0;
 	int for_win=1; //variable must be equal to "1" for win searching
 	win=check_for_end_rezult(game_board, for_win);
@@ -420,7 +428,7 @@ bool check_for_win_combination(int game_board[][BOARD_SIZE]){
 }
 
 	//Check for only draw result function
-bool check_for_draw(int game_board_cr[][BOARD_SIZE], int game_board_nl[][BOARD_SIZE]){
+bool check_for_draw(int game_board_cr[][BOARD_WIDTH], int game_board_nl[][BOARD_WIDTH]){
 	bool cr_draw=1, nl_draw=1;
 	int for_draw=0; //variable must be equal to "0" for draw searching
 		//Checking null board for a draw for nulles
@@ -431,13 +439,13 @@ bool check_for_draw(int game_board_cr[][BOARD_SIZE], int game_board_nl[][BOARD_S
 }
 
 	//AI turn processing
-void ai_turn(char now_turn, int game_board[][BOARD_SIZE], int game_board_op[][BOARD_SIZE], char game_screen[][BOARD_SIZE]){
+void ai_turn(char now_turn, int game_board[][BOARD_WIDTH], int game_board_op[][BOARD_WIDTH], char game_screen[][BOARD_WIDTH]){
 	int turn=0; //player's turn
 	cout<<"\n\nComputer is thinking\t";
 	Sleep(500);
 		//searching for winner combination (1st step)
-	for(int i=0;i<BOARD_SIZE;i++){
-		for(int j=0;j<BOARD_SIZE;j++){
+	for(int i=0;i<BOARD_HEIGHT;i++){
+		for(int j=0;j<BOARD_WIDTH;j++){
 			if(game_screen[i][j]==' '){
 				game_board[i][j]=1;
 				if(check_for_win_combination(game_board)==1){
@@ -454,8 +462,8 @@ void ai_turn(char now_turn, int game_board[][BOARD_SIZE], int game_board_op[][BO
 	}
 	if(turn==0){
 			//searching for opponent winner combination (2nd step)
-		for(int i=0;i<BOARD_SIZE;i++){
-			for(int j=0;j<BOARD_SIZE;j++){
+		for(int i=0;i<BOARD_HEIGHT;i++){
+			for(int j=0;j<BOARD_WIDTH;j++){
 				if(game_screen[i][j]==' '){
 				game_board_op[i][j]=1;
 				if(check_for_win_combination(game_board_op)==1){
@@ -488,16 +496,16 @@ void ai_turn(char now_turn, int game_board[][BOARD_SIZE], int game_board_op[][BO
 	}
 	if(turn==0 && ai_level==HARD){
 			//Smart turn at the beginning (7th step)			
-		if(game_screen[BOARD_SIZE/2][BOARD_SIZE/2]==' ')
-			turn=(BOARD_SIZE/2+1)*10+(BOARD_SIZE/2+1);
-		else if(game_screen[BOARD_SIZE/2+1][BOARD_SIZE/2-1]==' ')
-			turn=(BOARD_SIZE/2+2)*10+(BOARD_SIZE/2);
-		else if(game_screen[BOARD_SIZE/2+1][BOARD_SIZE/2+1]==' ')
-			turn=(BOARD_SIZE/2+2)*10+(BOARD_SIZE/2+2);
-		else if(game_screen[BOARD_SIZE/2-1][BOARD_SIZE/2-1]==' ')
-			turn=(BOARD_SIZE/2)*10+(BOARD_SIZE/2);
-		else if(game_screen[BOARD_SIZE/2-1][BOARD_SIZE/2+1]==' ')
-			turn=(BOARD_SIZE/2)*10+(BOARD_SIZE/2+2);			
+		if(game_screen[BOARD_HEIGHT/2][BOARD_WIDTH/2]==' ')
+			turn=(BOARD_HEIGHT/2+1)*10+(BOARD_WIDTH/2+1);
+		else if(game_screen[BOARD_HEIGHT/2+1][BOARD_WIDTH/2-1]==' ')
+			turn=(BOARD_HEIGHT/2+2)*10+(BOARD_WIDTH/2);
+		else if(game_screen[BOARD_HEIGHT/2+1][BOARD_WIDTH/2+1]==' ')
+			turn=(BOARD_HEIGHT/2+2)*10+(BOARD_WIDTH/2+2);
+		else if(game_screen[BOARD_HEIGHT/2-1][BOARD_WIDTH/2-1]==' ')
+			turn=(BOARD_HEIGHT/2)*10+(BOARD_WIDTH/2);
+		else if(game_screen[BOARD_HEIGHT/2-1][BOARD_WIDTH/2+1]==' ')
+			turn=(BOARD_HEIGHT/2)*10+(BOARD_WIDTH/2+2);			
 	}	
 	if(turn==0){
 			//Random turn - if no other logical turns (8th step)
@@ -506,7 +514,7 @@ void ai_turn(char now_turn, int game_board[][BOARD_SIZE], int game_board_op[][BO
 			if(i==100000) //used for faster AI turning (giving AI time for loop)
 				break;
 			turn=rand()%45+11;
-			if(turn/10<1 || turn/10>5 || turn%10<1|| turn%10>5);	//Check if the number is correct			
+			if(turn/10<1 || turn/10>BOARD_HEIGHT || turn%10<1|| turn%10>BOARD_WIDTH);	//Check if the number is correct			
 			else if(game_screen[turn/10-1][turn%10-1]!=' ');				//Check if the number is still available
 			else
 				break;
@@ -514,8 +522,8 @@ void ai_turn(char now_turn, int game_board[][BOARD_SIZE], int game_board_op[][BO
 	}
 	if(turn==0){
 			//Searching for turn from the begining (used for faster AI turning) (9th step)
-		for(int i=0;i<BOARD_SIZE;i++){
-			for(int j=0;j<BOARD_SIZE;j++){
+		for(int i=0;i<BOARD_HEIGHT;i++){
+			for(int j=0;j<BOARD_WIDTH;j++){
 				if(game_screen[i][j]==' '){
 					turn=(i+1)*10+(j+1);
 					break;	
@@ -529,10 +537,10 @@ void ai_turn(char now_turn, int game_board[][BOARD_SIZE], int game_board_op[][BO
 }
 
 	//searching for pottentional winner combination (puts between two)
-int check_between_two(int game_board[][BOARD_SIZE], char game_screen[][BOARD_SIZE]){
+int check_between_two(int game_board[][BOARD_WIDTH], char game_screen[][BOARD_WIDTH]){
 	int turn=0;
-	for(int i=0;i<BOARD_SIZE;i++){
-			for(int j=0;j<BOARD_SIZE;j++){
+	for(int i=0;i<BOARD_HEIGHT;i++){
+			for(int j=0;j<BOARD_WIDTH;j++){
 				if(game_screen[i][j]==' '){
 					if((game_board[i-1][j-1]==1 && game_board[i+1][j+1]==1 && game_screen[i-2][j-2]==' ' && game_screen[i+2][j+2]==' ') || 
 					(game_board[i-1][j]==1 && game_board[i+1][j]==1 && game_screen[i-2][j]==' ' && game_screen[i+2][j]==' ') ||
@@ -552,10 +560,10 @@ int check_between_two(int game_board[][BOARD_SIZE], char game_screen[][BOARD_SIZ
 }
 
 	//searching for pottentional winner combination (puts next to two)	
-int check_next_to_two(int game_board[][BOARD_SIZE], char game_screen[][BOARD_SIZE]){
+int check_next_to_two(int game_board[][BOARD_WIDTH], char game_screen[][BOARD_WIDTH]){
 	int turn=0;
-	for(int i=0;i<BOARD_SIZE;i++){
-			for(int j=0;j<BOARD_SIZE;j++){
+	for(int i=0;i<BOARD_HEIGHT;i++){
+			for(int j=0;j<BOARD_WIDTH;j++){
 				if(game_screen[i][j]==' '){
 					if((game_board[i-1][j-1]==1 && game_board[i-2][j-2]==1 && game_screen[i-3][j-3]==' ' && game_screen[i+1][j+1]==' ') || 
 					(game_board[i-1][j]==1 && game_board[i-2][j]==1 && game_screen[i-3][j]==' ' && game_screen[i+1][j]==' ') ||
@@ -577,3 +585,4 @@ int check_next_to_two(int game_board[][BOARD_SIZE], char game_screen[][BOARD_SIZ
 		}
 	return turn;	
 }
+//In this version of game you can change both width and height of the board. In old version the board was always a square.
