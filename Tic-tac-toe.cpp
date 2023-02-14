@@ -14,7 +14,7 @@
 using namespace std;
 
 const int BOARD_WIDTH=5; //The number of coloumns in the game board
-const int BOARD_HEIGHT=7; //The number of rows in the game board
+const int BOARD_HEIGHT=5; //The number of rows in the game board
 const int IN_LINE=4; //How much player's signs must be in line for win
 const int EASY=1; //low level of AI
 const int MEDIUM=2; //middle level of AI
